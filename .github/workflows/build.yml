@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: build
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: ./Easy-Password-Validator
+    - name: Build
+      run: dotnet build --configuration Release
+      working-directory: ./Easy-Password-Validator
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Install dependencies
+      run: dotnet restore ./Easy-Password-Validator-Test/Easy-Password-Validator-Test.csproj
+    - name: Test
+      run: dotnet test --configuration Release ./Easy-Password-Validator-Test/Easy-Password-Validator-Test.csproj
