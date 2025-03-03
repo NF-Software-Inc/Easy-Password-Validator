@@ -31,7 +31,7 @@ public class IndividualTests
     public void CheckBadListTrue(string value)
     {
         var requirements = new PasswordRequirements() { UseBadList = true };
-        var test = new TestBadList(requirements, ".\\BadLists\\top-10k-passwords.txt");
+        var test = new TestBadList(requirements, Path.Combine("BadLists", "top-10k-passwords.txt"));
         var result = test.TestAndScore(value);
 
         Assert.True(result);
@@ -43,7 +43,7 @@ public class IndividualTests
     public void CheckBadListFalse(string value)
     {
         var requirements = new PasswordRequirements() { UseBadList = true };
-        var test = new TestBadList(requirements, ".\\BadLists\\top-10k-passwords.txt");
+        var test = new TestBadList(requirements, Path.Combine("BadLists", "top-10k-passwords.txt"));
         var result = test.TestAndScore(value);
 
         Assert.False(result, test.FailureMessage);
