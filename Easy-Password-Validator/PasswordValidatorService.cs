@@ -408,6 +408,7 @@ namespace Easy_Password_Validator
 					case "en":
 					case "fr":
 					case "it":
+					case "nl":
 					case "ro":
 					case "pl":
 					case "zh":
