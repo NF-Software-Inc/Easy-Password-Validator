@@ -2,56 +2,113 @@
 
 name: publish
 on:
-  workflow_dispatch:
-  release:
-    types: [ published ]
-
-env:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-  DOTNET_NOLOGO: true
-  NuGetDirectory: ${{ github.workspace }}/nuget
-  PublishVersion: ${{ github.event.release.tag_name }}.${{ github.run_number }}
-
-defaults:
-  run:
-    shell: pwsh
+    workflow_dispatch:
+      inputs:
+        targets:
+          description: Targets
+          required: true
+          type: string
+        version:
+          description: Version
+          required: true
+          type: string
+        build:
+          description: Build
+          type: string
+        deploy:
+          description: Deploy
+          required: true
+          type: boolean
+          default: false
+    release:
+      types: [ published ]
 
 jobs:
-  package:
-    runs-on: ubuntu-24.04
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      Targets: ${{ steps.set-values.outputs.Targets }}
+      Version: ${{ steps.set-values.outputs.Version }}
+      Build: ${{ steps.set-values.outputs.Build }}
+      Deploy: ${{ steps.set-values.outputs.Deploy }}
+    defaults:
+      run:
+        shell: bash
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Install dependencies
-      run: dotnet restore
-      working-directory: ./Easy-Password-Validator
-    - name: Build
-      run: |
-        dotnet build --configuration Release
-        dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:AssemblyVersion=${{ env.PublishVersion }} /p:Version=${{ github.event.release.tag_name }} /p:FileVersion=${{ env.PublishVersion }}
-      working-directory: ./Easy-Password-Validator
-    - uses: actions/upload-artifact@v4
-      with:
-        name: nuget
-        if-no-files-found: error
-        retention-days: 7
-        path: ${{ env.NuGetDirectory }}/*.nupkg
-  deploy:
-    if: false && github.event_name == 'release'
-    runs-on: ubuntu-24.04
-    needs: [ package ]
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: nuget
-          path: ${{ env.NuGetDirectory }}
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Publish NuGet package
-        run: dotnet nuget push ${{ env.NuGetDirectory }}/*.nupkg --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
-        
+      - name: Update Environment Variables
+        id: set-values
+        run: |
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            echo "Targets=${{ github.event.inputs.targets }}" >> "$GITHUB_OUTPUT"
+            echo "Version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+            echo "Build=${{ github.event.inputs.build || github.run_number }}" >> "$GITHUB_OUTPUT"
+            echo "Deploy=${{ github.event.inputs.deploy }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "Targets=${{ github.event.release.name }}" >> "$GITHUB_OUTPUT"
+            echo "Version=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+            echo "Build=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+            echo "Deploy=${{ github.event_name == 'release' }}" >> "$GITHUB_OUTPUT"
+          fi
+  android:
+    needs: [ prepare ]
+    if: ${{ contains(needs.prepare.outputs.Targets, 'All') || contains(needs.prepare.outputs.Targets, 'MAUI') || contains(needs.prepare.outputs.Targets, 'Android') }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-android.yml
+    with:
+      build: ${{ needs.prepare.outputs.Build }}
+      version: ${{ needs.prepare.outputs.Version }}
+    secrets: inherit
+  ios:
+    needs: [ prepare ]
+    if: ${{ contains(needs.prepare.outputs.Targets, 'All') || contains(needs.prepare.outputs.Targets, 'MAUI') || contains(needs.prepare.outputs.Targets, 'iOS') }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-ios.yml
+    with:
+      build: ${{ needs.prepare.outputs.Build }}
+      version: ${{ needs.prepare.outputs.Version }}
+    secrets: inherit
+  nuget:
+    needs: [ prepare ]
+    if: ${{ contains(needs.prepare.outputs.Targets, 'All') || contains(needs.prepare.outputs.Targets, 'NuGet') }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-nuget.yml
+    with:
+      build: ${{ needs.prepare.outputs.Build }}
+      version: ${{ needs.prepare.outputs.Version }}
+      deploy: ${{ needs.prepare.outputs.Deploy == 'true' }}
+    secrets: inherit
+  mac-catalyst:
+    needs: [ prepare ]
+    if: ${{ contains(needs.prepare.outputs.Targets, 'All') || contains(needs.prepare.outputs.Targets, 'MAUI') || contains(needs.prepare.outputs.Targets, 'Mac Catalyst') }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-mac-catalyst.yml
+    with:
+      build: ${{ needs.prepare.outputs.Build }}
+      version: ${{ needs.prepare.outputs.Version }}
+    secrets: inherit
+  windows-arm64:
+    needs: [ prepare ]
+    if: ${{ contains(needs.prepare.outputs.Targets, 'All') || contains(needs.prepare.outputs.Targets, 'MAUI') || contains(needs.prepare.outputs.Targets, 'Windows') }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-windows.yml
+    with:
+      architecture: arm64
+      build: ${{ needs.prepare.outputs.Build }}
+      version: ${{ needs.prepare.outputs.Version }}
+    secrets: inherit
+  windows-x64:
+    needs: [ prepare ]
+    if: ${{ contains(needs.prepare.outputs.Targets, 'All') || contains(needs.prepare.outputs.Targets, 'MAUI') || contains(needs.prepare.outputs.Targets, 'Windows') }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-windows.yml
+    with:
+      architecture: x64
+      build: ${{ needs.prepare.outputs.Build }}
+      version: ${{ needs.prepare.outputs.Version }}
+    secrets: inherit

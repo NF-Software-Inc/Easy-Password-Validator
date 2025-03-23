@@ -1,7 +1,9 @@
 # Easy Password Validator
 
-[![MIT](https://img.shields.io/github/license/thirstyape/Easy-Password-Validator)](https://github.com/thirstyape/Easy-Password-Validator/blob/master/LICENSE)
+[![MIT](https://img.shields.io/github/license/NF-Software-Inc/Easy-Password-Validator)](https://github.com/NF-Software-Inc/Easy-Password-Validator/blob/master/LICENSE)
 [![NuGet](https://img.shields.io/nuget/v/Easy.Password.Validator.svg)](https://www.nuget.org/packages/Easy.Password.Validator/)
+[![Build](https://img.shields.io/github/actions/workflow/status/NF-Software-Inc/Easy-Password-Validator/build.yml)](https://github.com/NF-Software-Inc/Easy-Password-Validator/actions/workflows/build.yml)
+[![Publish](https://img.shields.io/github/actions/workflow/status/NF-Software-Inc/Easy-Password-Validator/publish.yml?label=publish)](https://github.com/NF-Software-Inc/Easy-Password-Validator/actions/workflows/publish.yml)
 
 This project was created to provide an easy to use and configurable password validation library. If the default configuration is sufficient for your needs the library can be used out of the box without further setup. However, if you have specific validation needs you can alter the library configuration settings and also provide custom validation methods.
 
