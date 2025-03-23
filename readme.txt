@@ -3,12 +3,12 @@
 As NuGet does not allow including files with package deployment the bad password lists will run over the web by default.
 If this behavior is not desired they can be copied into your project in the following format.
 
-Download https://raw.githubusercontent.com/thirstyape/Easy-Password-Validator/master/BadLists/top-10k-passwords.txt and copy to
+Download https://raw.githubusercontent.com/NF-Software-Inc/Easy-Password-Validator/master/BadLists/top-10k-passwords.txt and copy to
 \ProjectBuildDirectory\BadLists\top-10k-passwords.txt
 - or -
 %localappdata%\Easy-Password-Validator\BadLists\top-10k-passwords.txt
 
-Download https://raw.githubusercontent.com/thirstyape/Easy-Password-Validator/master/BadLists/top-100k-passwords.txt and copy to
+Download https://raw.githubusercontent.com/NF-Software-Inc/Easy-Password-Validator/master/BadLists/top-100k-passwords.txt and copy to
 \ProjectBuildDirectory\BadLists\top-100k-passwords.txt 
 - or -
 %localappdata%\Easy-Password-Validator\BadLists\top-100k-passwords.txt

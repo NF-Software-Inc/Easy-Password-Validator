@@ -28,8 +28,8 @@ namespace Easy_Password_Validator
 		private readonly string BadListDirectory;
 		private readonly bool LoadRemoteBadLists;
 
-		private const string Remote10k = "https://raw.githubusercontent.com/thirstyape/Easy-Password-Validator/master/BadLists/top-10k-passwords.txt";
-		private const string Remote100k = "https://raw.githubusercontent.com/thirstyape/Easy-Password-Validator/master/BadLists/top-100k-passwords.txt";
+		private const string Remote10k = "https://raw.githubusercontent.com/NF-Software-Inc/Easy-Password-Validator/master/BadLists/top-10k-passwords.txt";
+		private const string Remote100k = "https://raw.githubusercontent.com/NF-Software-Inc/Easy-Password-Validator/master/BadLists/top-100k-passwords.txt";
 
 		private string InstallDirectory => Path.GetDirectoryName(Assembly.GetAssembly(typeof(PasswordValidatorService)).Location);
 
