@@ -56,7 +56,7 @@ public class IndividualTests
     public void CheckBadListUserInformationTrue(string value)
     {
         var requirements = new PasswordRequirements() { UseBadList = true };
-        var badList = new[] { "john", "doe", "john.doe" };
+        var badList = new[] { "", "john", "doe", "john.doe" };
         var test = new TestBadList(requirements, badList) { ListType = BadListTypes.UserInformation };
         var result = test.TestAndScore(value);
 
