@@ -106,7 +106,11 @@ namespace Easy_Password_Validator.Tests
                 return true;
 
             // Check for match
+            // 1. badList item contains password
             var match = BadList.Any(x => x.IndexOf(password, StringComparison.OrdinalIgnoreCase) >= 0);
+            // 2. password contains badList item
+            if (match == false && ListType == BadListTypes.UserInformation)
+                match = BadList.Any(x => password.IndexOf(x, StringComparison.OrdinalIgnoreCase) >= 0);
 
             // Adjust score
             ScoreModifier = match ? -50 : 0;
