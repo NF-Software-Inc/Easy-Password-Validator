@@ -112,8 +112,8 @@ namespace Easy_Password_Validator.Tests
 
             // Check for match
             var match = UseInvertedMode
-                ? BadList.Any(x => x.Length > 0 && password.IndexOf(x, StringComparison.OrdinalIgnoreCase) >= 0)    // Inverted mode: password contains bad list item
-                : BadList.Any(x => x.Length > 0 && x.IndexOf(password, StringComparison.OrdinalIgnoreCase) >= 0);   // Normal mode: bad list item contains password
+                ? BadList.Any(x => x.Length > 0 && password.IndexOf(x, StringComparison.OrdinalIgnoreCase) >= 0)
+                : BadList.Any(x => x.Length > 0 && x.IndexOf(password, StringComparison.OrdinalIgnoreCase) >= 0);
 
             // Adjust score
             ScoreModifier = match ? -50 : 0;

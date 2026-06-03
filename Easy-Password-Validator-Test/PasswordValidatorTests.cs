@@ -213,7 +213,8 @@ public class PasswordValidatorTests
     [Theory]
     [InlineData("123 fake st")]
     [InlineData("first.last")]
-    public void CheckPasswordWithUserDataFalse(string value)
+	[InlineData("123 Fake St first.last")]
+	public void CheckPasswordWithUserDataFalse(string value)
     {
         var requirements = new PasswordRequirements();
         var validator = new PasswordValidatorService(requirements);
