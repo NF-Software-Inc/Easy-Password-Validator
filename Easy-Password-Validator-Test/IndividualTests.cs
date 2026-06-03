@@ -57,7 +57,7 @@ public class IndividualTests
     {
         var requirements = new PasswordRequirements() { UseBadList = true };
         var badList = new[] { "", "john", "doe", "john.doe" };
-        var test = new TestBadList(requirements, badList) { ListType = BadListTypes.UserInformation };
+        var test = new TestBadList(requirements, badList) { UseInvertedMode = true };
         var result = test.TestAndScore(value);
 
         Assert.True(result);
@@ -71,7 +71,7 @@ public class IndividualTests
     {
         var requirements = new PasswordRequirements() { UseBadList = true };
         var badList = new[] { "john", "doe", "john.doe" };
-        var test = new TestBadList(requirements, badList) { ListType = BadListTypes.UserInformation };
+        var test = new TestBadList(requirements, badList) { UseInvertedMode = true };
         var result = test.TestAndScore(value);
 
         Assert.False(result, test.FailureMessage);

@@ -94,6 +94,11 @@ namespace Easy_Password_Validator.Tests
         /// </summary>
         public bool TestL33tVariants { get; set; }
 
+        /// <summary>
+        /// Specifies whether to use inverted mode (password contains bad list item) instead of normal mode (bad list item contains password)
+        /// </summary>
+        public bool UseInvertedMode { get; set; }
+
         /// <inheritdoc/>
         public bool TestAndScore(string password)
         {
@@ -106,11 +111,9 @@ namespace Easy_Password_Validator.Tests
                 return true;
 
             // Check for match
-            // 1. badList item contains password
-            var match = BadList.Any(x => !string.IsNullOrWhiteSpace(x) && x.IndexOf(password, StringComparison.OrdinalIgnoreCase) >= 0);
-            // 2. password contains badList item
-            if (!match && ListType == BadListTypes.UserInformation)
-                match = BadList.Any(x => !string.IsNullOrWhiteSpace(x) && password.IndexOf(x, StringComparison.OrdinalIgnoreCase) >= 0);
+            var match = UseInvertedMode
+                ? BadList.Any(x => x.Length > 0 && password.IndexOf(x, StringComparison.OrdinalIgnoreCase) >= 0)    // Inverted mode: password contains bad list item
+                : BadList.Any(x => x.Length > 0 && x.IndexOf(password, StringComparison.OrdinalIgnoreCase) >= 0);   // Normal mode: bad list item contains password
 
             // Adjust score
             ScoreModifier = match ? -50 : 0;

@@ -134,9 +134,12 @@ namespace Easy_Password_Validator
 				var existing = BadListTests.FirstOrDefault(x => x.ListType == BadListTypes.UserInformation);
 
 				if (existing != null)
+				{
 					existing.BadList = userInformation;
+					existing.UseInvertedMode = true;
+				}
 				else
-					BadListTests.Add(new TestBadList(Settings, userInformation) { ListType = BadListTypes.UserInformation, TestL33tVariants = true });
+					BadListTests.Add(new TestBadList(Settings, userInformation) { ListType = BadListTypes.UserInformation, TestL33tVariants = true, UseInvertedMode = true });
 			}
 
 			RunBadListTests(password, false);
