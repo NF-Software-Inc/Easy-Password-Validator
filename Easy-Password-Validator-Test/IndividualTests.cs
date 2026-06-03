@@ -50,6 +50,34 @@ public class IndividualTests
     }
 
     [Theory]
+    [InlineData("xyz123")]
+    [InlineData("Password1!")]
+    [InlineData("MySecurePass456")]
+    public void CheckBadListUserInformationTrue(string value)
+    {
+        var requirements = new PasswordRequirements() { UseBadList = true };
+        var badList = new[] { "", "john", "doe", "john.doe" };
+        var test = new TestBadList(requirements, badList) { UseInvertedMode = true };
+        var result = test.TestAndScore(value);
+
+        Assert.True(result);
+    }
+
+    [Theory]
+    [InlineData("john.doe.1")]
+    [InlineData("John.Doe.Password")]
+    [InlineData("xyz123john")]
+    public void CheckBadListUserInformationFalse(string value)
+    {
+        var requirements = new PasswordRequirements() { UseBadList = true };
+        var badList = new[] { "john", "doe", "john.doe" };
+        var test = new TestBadList(requirements, badList) { UseInvertedMode = true };
+        var result = test.TestAndScore(value);
+
+        Assert.False(result, test.FailureMessage);
+    }
+
+    [Theory]
     [InlineData("hasdigit1")]
     public void RequireDigitTrue(string value)
     {
@@ -113,7 +141,7 @@ public class IndividualTests
     [Theory]
     [InlineData("", 1)]
     [InlineData("Need6", 6)]
-    public void MinimumLengthFalse(string value, int minimum) 
+    public void MinimumLengthFalse(string value, int minimum)
     {
         var requirements = new PasswordRequirements() { UseLength = true, MinLength = minimum };
         var test = new TestLength(requirements);
@@ -197,7 +225,7 @@ public class IndividualTests
     [InlineData("")]
     [InlineData("nopunctuation")]
     [InlineData("nosymbol")]
-    public void RequirePunctuationFalse(string value) 
+    public void RequirePunctuationFalse(string value)
     {
         var requirements = new PasswordRequirements() { UsePunctuation = true, RequirePunctuation = true };
         var test = new TestPunctuation(requirements);
@@ -223,7 +251,7 @@ public class IndividualTests
     [InlineData("", 0)]
     [InlineData("Maaaax3", 3)]
     [InlineData("MMMaaaxxxx3", 3)]
-    public void MaximumRepeatFalse(string value, int maximum) 
+    public void MaximumRepeatFalse(string value, int maximum)
     {
         var requirements = new PasswordRequirements() { UseRepeat = true, MaxRepeatSameCharacter = maximum };
         var test = new TestRepeat(requirements);

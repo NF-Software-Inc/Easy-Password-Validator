@@ -94,11 +94,39 @@ namespace Easy_Password_Validator
 		/// Runs scoring and validation on the specified password
 		/// </summary>
 		/// <param name="password">The password to test</param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		public bool TestAndScore(string password) => TestAndScore(password, null, null, false);
+
+		/// <summary>
+		/// Runs scoring and validation on the specified password
+		/// </summary>
+		/// <param name="password">The password to test</param>
+		/// <param name="userInformation">An optional list containing user information to compare against the password</param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		public bool TestAndScore(string password, IEnumerable<string> userInformation) => TestAndScore(password, userInformation, null, true);
+
+		/// <summary>
+		/// Runs scoring and validation on the specified password
+		/// </summary>
+		/// <param name="password">The password to test</param>
 		/// <param name="userInformation">An optional list containing user information to compare against the password</param>
 		/// <param name="languageCode">An optional language code used for error text</param>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public bool TestAndScore(string password, IEnumerable<string> userInformation = null, string languageCode = null)
+		public bool TestAndScore(string password, IEnumerable<string> userInformation, string languageCode) => TestAndScore(password, userInformation, languageCode, true);
+
+		/// <summary>
+		/// Runs scoring and validation on the specified password
+		/// </summary>
+		/// <param name="password">The password to test</param>
+		/// <param name="userInformation">An optional list containing user information to compare against the password</param>
+		/// <param name="languageCode">An optional language code used for error text</param>
+		/// <param name="useInvertedMode">Indicates whether to use <see cref="TestBadList.UseInvertedMode"/> for user information bad list tests</param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		public bool TestAndScore(string password, IEnumerable<string> userInformation, string languageCode, bool useInvertedMode)
 		{
 			// Input validation
 			if (string.IsNullOrEmpty(password))
@@ -134,9 +162,19 @@ namespace Easy_Password_Validator
 				var existing = BadListTests.FirstOrDefault(x => x.ListType == BadListTypes.UserInformation);
 
 				if (existing != null)
+				{
 					existing.BadList = userInformation;
+					existing.UseInvertedMode = useInvertedMode;
+				}
 				else
-					BadListTests.Add(new TestBadList(Settings, userInformation) { ListType = BadListTypes.UserInformation, TestL33tVariants = true });
+				{
+					BadListTests.Add(new TestBadList(Settings, userInformation)
+					{
+						ListType = BadListTypes.UserInformation,
+						TestL33tVariants = true,
+						UseInvertedMode = useInvertedMode
+					});
+				}
 			}
 
 			RunBadListTests(password, false);
@@ -412,8 +450,8 @@ namespace Easy_Password_Validator
 					case "ro":
 					case "pl":
 					case "zh":
-                    case "ar":
-                        return true;
+					case "ar":
+						return true;
 					default:
 						return false;
 				};

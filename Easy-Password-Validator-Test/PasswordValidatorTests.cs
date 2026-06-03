@@ -55,7 +55,7 @@ public class PasswordValidatorTests
     [InlineData("Nine.10!")]
     public void CheckPasswordWithRequirementsTrue(string value)
     {
-        var requirements = new PasswordRequirements() 
+        var requirements = new PasswordRequirements()
         {
             RequireDigit = true,
             RequireLowercase = true,
@@ -126,7 +126,7 @@ public class PasswordValidatorTests
     [InlineData("score low")]
     [InlineData("11111qwerty999888")]
     [InlineData("!_!")]
-    public void CheckPasswordScoreOnlyFalse(string value) 
+    public void CheckPasswordScoreOnlyFalse(string value)
     {
         var requirements = new PasswordRequirements()
         {
@@ -200,7 +200,7 @@ public class PasswordValidatorTests
     ];
 
     [Theory]
-    [InlineData("123 Fake St first.last")]
+    [InlineData("SecureP@ssw0rd!")]
     public void CheckPasswordWithUserDataTrue(string value)
     {
         var requirements = new PasswordRequirements();
@@ -213,7 +213,8 @@ public class PasswordValidatorTests
     [Theory]
     [InlineData("123 fake st")]
     [InlineData("first.last")]
-    public void CheckPasswordWithUserDataFalse(string value)
+	[InlineData("123 Fake St first.last")]
+	public void CheckPasswordWithUserDataFalse(string value)
     {
         var requirements = new PasswordRequirements();
         var validator = new PasswordValidatorService(requirements);
