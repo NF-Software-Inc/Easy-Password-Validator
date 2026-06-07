@@ -442,16 +442,16 @@ namespace Easy_Password_Validator
 			{
 				switch (languageCode.ToLower())
 				{
+					case "ar":
 					case "de":
 					case "en":
+					case "es":
 					case "fr":
 					case "it":
 					case "nl":
 					case "ro":
 					case "pl":
 					case "zh":
-					case "ar":
-					case "es":
 						return true;
 					default:
 						return false;
