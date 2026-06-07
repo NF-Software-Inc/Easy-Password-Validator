@@ -451,6 +451,7 @@ namespace Easy_Password_Validator
 					case "pl":
 					case "zh":
 					case "ar":
+					case "es":
 						return true;
 					default:
 						return false;
