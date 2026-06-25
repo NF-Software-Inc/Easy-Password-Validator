@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/Easy-Password-Validator"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "nuget"
+    directory: "/Easy-Password-Validator-Test"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "nuget"
+    directory: "/Easy-Password-Validator-GUI"
+    schedule:
+      interval: "monthly"
