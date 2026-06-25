@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: build-gui
+permissions:
+  contents: read
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+    - name: Install MAUI
+      run: dotnet workload install maui
+      working-directory: .\Easy-Password-Validator-GUI
+    - name: Install dependencies
+      run: dotnet restore .\Easy-Password-Validator-GUI.csproj
+      working-directory: .\Easy-Password-Validator-GUI
+    - name: Build
+      run: dotnet build --configuration Release --framework net9.0-windows10.0.19041.0 .\Easy-Password-Validator-GUI.csproj
+      working-directory: .\Easy-Password-Validator-GUI
