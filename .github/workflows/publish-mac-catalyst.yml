@@ -29,7 +29,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4.3.1
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
     - name: Install MAUI
       run: dotnet workload install maui
       working-directory: ./Easy-Password-Validator-GUI
@@ -51,10 +51,10 @@ jobs:
         mv '/Users/runner/Library/MobileDevice/Provisioning Profiles/${{ secrets.APPLE_MACOS_PROVISIONING_ID }}.mobileprovision' '/Users/runner/Library/MobileDevice/Provisioning Profiles/${{ secrets.APPLE_MACOS_PROVISIONING_ID }}.provisionprofile'
         sudo xcode-select -s /Applications/Xcode_16.2.app
         sudo xcode-select -switch /Applications/Xcode_16.2.app/Contents/Developer
-        dotnet publish -c Release -f net9.0-maccatalyst -p:MtouchLink=SdkOnly -p:CreatePackage=true -p:UseHardenedRuntime=true -p:EnableCodeSigning=true -p:EnablePackageSigning=true -p:CodesignKey="${{ secrets.APPLE_DISTRIBUTION_NAME }}" -p:CodesignProvision="Easy Password Validator Mac Store" -p:CodesignEntitlements="Platforms/MacCatalyst/Entitlements.plist" -p:PackageSigningKey="${{ secrets.APPLE_DEVELOPER_NAME }}" -p:AssemblyVersion=${{ env.PublishVersion }} -p:Version=${{ inputs.version }} -p:FileVersion=${{ env.PublishVersion }} -p:ApplicationVersion=${{ inputs.build }} -p:ApplicationDisplayVersion=${{ inputs.version }}
+        dotnet publish -c Release -f net10.0-maccatalyst -p:MtouchLink=SdkOnly -p:CreatePackage=true -p:UseHardenedRuntime=true -p:EnableCodeSigning=true -p:EnablePackageSigning=true -p:CodesignKey="${{ secrets.APPLE_DISTRIBUTION_NAME }}" -p:CodesignProvision="Easy Password Validator Mac Store" -p:CodesignEntitlements="Platforms/MacCatalyst/Entitlements.plist" -p:PackageSigningKey="${{ secrets.APPLE_DEVELOPER_NAME }}" -p:AssemblyVersion=${{ env.PublishVersion }} -p:Version=${{ inputs.version }} -p:FileVersion=${{ env.PublishVersion }} -p:ApplicationVersion=${{ inputs.build }} -p:ApplicationDisplayVersion=${{ inputs.version }}
       working-directory: ./Easy-Password-Validator-GUI
     - name: Add to Release
-      run: gh release upload ${{ inputs.version }} ${{ github.workspace }}/Easy-Password-Validator-GUI/bin/Release/net9.0-maccatalyst/publish/Easy-Password-Validator-GUI-${{ inputs.version }}.pkg
+      run: gh release upload ${{ inputs.version }} ${{ github.workspace }}/Easy-Password-Validator-GUI/bin/Release/net10.0-maccatalyst/publish/Easy-Password-Validator-GUI-${{ inputs.version }}.pkg
       env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/upload-artifact@v4.6.2
@@ -62,4 +62,4 @@ jobs:
         name: Easy-Password-Validator-GUI-maccatalyst
         if-no-files-found: error
         retention-days: 7
-        path: ${{ github.workspace }}/Easy-Password-Validator-GUI/bin/Release/net9.0-maccatalyst/publish/*.pkg
+        path: ${{ github.workspace }}/Easy-Password-Validator-GUI/bin/Release/net10.0-maccatalyst/publish/*.pkg
