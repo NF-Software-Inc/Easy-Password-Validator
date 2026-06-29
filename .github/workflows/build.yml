@@ -22,7 +22,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
     - name: Install dependencies
       run: dotnet restore
       working-directory: ./Easy-Password-Validator
@@ -36,7 +36,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
     - name: Install dependencies
       run: dotnet restore ./Easy-Password-Validator-Test/Easy-Password-Validator-Test.csproj
     - name: Test
