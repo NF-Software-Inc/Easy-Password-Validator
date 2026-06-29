@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -432,39 +433,57 @@ namespace Easy_Password_Validator
 			return string.Join(string.Empty, GetGraphemeClusters(value).Reverse().ToArray());
 		}
 
-		/// <summary>
-		/// Checks to see that the user provided language code is supported
-		/// </summary>
-		/// <param name="languageCode">The code to check</param>
-		private bool CheckValidLanguage(string languageCode)
-		{
-			if (languageCode.Length == 2)
-			{
-				switch (languageCode.ToLower())
-				{
-					case "ar":
-					case "de":
-					case "en":
-					case "es":
-					case "fr":
-					case "it":
-					case "nl":
-					case "ro":
-					case "pl":
-					case "zh":
-						return true;
-					default:
-						return false;
-				};
-			}
-			else if (languageCode.Length == 5 && languageCode[2] == '-')
-			{
-				return CheckValidLanguage(languageCode.Substring(0, 2));
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
+        /// <summary>
+        /// The resource manager for accessing localized resources
+        /// </summary>
+        private static readonly ResourceManager _rm = Properties.Resources.ResourceManager;
+
+        /// <summary>
+        /// A lazy-loaded collection of supported language codes based on the available resource sets.
+        /// Instead of hardcoding the supported languages, this dynamically checks which cultures have corresponding resource sets available in the assembly.
+        /// This allows for easier maintenance and extension of supported languages without modifying the code.
+        /// </summary>
+        private static readonly Lazy<HashSet<string>> _supportedLanguages =
+            new Lazy<HashSet<string>>(() =>
+            {
+                var codes = new HashSet<string>(
+                    CultureInfo.GetCultures(CultureTypes.NeutralCultures)
+                        .Where(c =>
+                        {
+                            try
+                            {
+                                return _rm.GetResourceSet(c, true, false) != null;
+                            }
+                            catch
+                            {
+                                return false;
+                            }
+                        })
+                        .Select(c => c.TwoLetterISOLanguageName)
+                        .Where(code => string.IsNullOrWhiteSpace(code) == false && code != "iv"),
+                    StringComparer.OrdinalIgnoreCase);
+
+                codes.Add("en");    // Ensure English is always included as a fallback
+
+                return codes;
+            });
+
+        /// <summary>
+        /// Checks to see that the user provided language code is supported
+        /// </summary>
+        /// <param name="languageCode">The code to check</param>
+        private bool CheckValidLanguage(string languageCode)
+        {
+            if (languageCode.Length == 2)
+            {
+                return _supportedLanguages.Value.Contains(languageCode);
+            }
+            else if (languageCode.Length == 5 && languageCode[2] == '-')
+            {
+                return _supportedLanguages.Value.Contains(languageCode.Substring(0, 2));
+            }
+
+            return false;
+        }
+    }
 }

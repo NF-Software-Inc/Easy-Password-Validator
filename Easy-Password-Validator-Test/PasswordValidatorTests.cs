@@ -213,8 +213,8 @@ public class PasswordValidatorTests
     [Theory]
     [InlineData("123 fake st")]
     [InlineData("first.last")]
-	[InlineData("123 Fake St first.last")]
-	public void CheckPasswordWithUserDataFalse(string value)
+    [InlineData("123 Fake St first.last")]
+    public void CheckPasswordWithUserDataFalse(string value)
     {
         var requirements = new PasswordRequirements();
         var validator = new PasswordValidatorService(requirements);
@@ -222,4 +222,59 @@ public class PasswordValidatorTests
 
         Assert.False(result, string.Join(' ', validator.FailureMessages));
     }
+
+    #region Language Code Tests
+    /// <summary>
+    /// Check that supported language codes (e.g., "en", "de", "fr", "zh") do not throw exceptions.
+    /// </summary>
+    /// <param name="languageCode">The supported language code to test</param>
+    [Theory]
+    [InlineData("en")]
+    [InlineData("de")]
+    [InlineData("fr")]
+    [InlineData("zh")]
+    public void CheckSupportedLanguageCodesDoNotThrow(string languageCode)
+    {
+        var requirements = new PasswordRequirements();
+        var validator = new PasswordValidatorService(requirements);
+
+        var ex = Record.Exception(() => validator.TestAndScore("Nine.10!", null, languageCode));
+
+        Assert.Null(ex);
+    }
+
+    /// <summary>
+    /// Check that unsupported language codes (e.g., "xx", "zz-ZZ", "not-a-culture") throw an ArgumentException with the parameter name "languageCode".
+    /// </summary>
+    /// <param name="languageCode">The unsupported language code to test</param>
+    [Theory]
+    [InlineData("xx")]
+    [InlineData("zz-ZZ")]
+    [InlineData("not-a-culture")]
+    public void CheckUnsupportedLanguageCodesThrow(string languageCode)
+    {
+        var requirements = new PasswordRequirements();
+        var validator = new PasswordValidatorService(requirements);
+
+        Assert.Throws<ArgumentException>(nameof(languageCode), () => validator.TestAndScore("Nine.10!", null, languageCode));
+    }
+
+    /// <summary>
+    /// Check that specific culture codes (e.g., "en-US", "de-DE", "fr-CA") are accepted and do not throw exceptions.
+    /// </summary>
+    /// <param name="languageCode">The culture code to test</param>
+    [Theory]
+    [InlineData("en-US")]
+    [InlineData("de-DE")]
+    [InlineData("fr-CA")]
+    public void CheckSpecificCultureCodesBehavior(string languageCode)
+    {
+        var requirements = new PasswordRequirements();
+        var validator = new PasswordValidatorService(requirements);
+
+        var ex = Record.Exception(() => validator.TestAndScore("Nine.10!", null, languageCode));
+
+        Assert.Null(ex);
+    }
+    #endregion
 }
