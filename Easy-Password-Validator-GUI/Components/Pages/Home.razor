@@ -1,4 +1,6 @@
-﻿@page "/"
+﻿@using Easy_Password_Validator.Enums
+
+@page "/"
 @inherits ComponentBase
 
 <TitleBlock Title="Easy Password Validator" />
@@ -75,7 +77,7 @@
                 <div class="field">
                     <Label For="() => Settings.KeyboardStyle" TooltipMode="TooltipRight" />
                     <div class="control has-icons-left is-expanded">
-                        <InputSelectEnum class="is-fullwidth" @bind-Value="Settings.KeyboardStyle" @bind-Value:after='ValidatePassword' />
+                        <InputSelectObject class="is-fullwidth" @bind-Value="Settings.KeyboardStyle" DisplayValue="x => x.ToString()" Items="Enum.GetValues<PatternMapTypes>().ToList()" @bind-Value:after='ValidatePassword' />
                         <span class="material-icons icon is-left">list</span>
                     </div>
                 </div>
