@@ -40,4 +40,5 @@ jobs:
     - name: Install dependencies
       run: dotnet restore ./Easy-Password-Validator-Test/Easy-Password-Validator-Test.csproj
     - name: Test
-      run: dotnet test --configuration Release ./Easy-Password-Validator-Test/Easy-Password-Validator-Test.csproj
+      run: dotnet test --configuration Release
+      working-directory: ./Easy-Password-Validator-Test
